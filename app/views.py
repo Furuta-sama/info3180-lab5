@@ -82,6 +82,11 @@ def logout():
     flash('You have been logged out.', 'danger')
     return redirect(url_for('home'))
 
+@app.route('/secure-page')
+@login_required
+def secure_page():
+    """Render a secure page on our website that only logged in users can access."""
+    return render_template('secure_page.html')
 
 # user_loader callback. This callback is used to reload the user object from
 # the user ID stored in the session
@@ -92,6 +97,16 @@ def load_user(id):
 ###
 # The functions below should be applicable to all Flask apps.
 ###
+
+# Flash errors from the form if validation fails with Flask-WTF
+# http://flask.pocoo.org/snippets/12/
+def flash_errors(form):
+    for field, errors in form.errors.items():
+        for error in errors:
+            flash(u"Error in the %s field - %s" % (
+                getattr(form, field).label.text,
+                error
+            ), 'danger')
 
 
 @app.route('/<file_name>.txt')
